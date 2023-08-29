@@ -1,0 +1,194 @@
+zabbix_export:
+  version: '6.0'
+  date: '2023-08-29T12:48:57Z'
+  groups:
+    -
+      uuid: d67920dc7a1f41708608fd2a0f2a7652
+      name: Roteadores
+  templates:
+    -
+      uuid: 24e7d78626f04b03a473a9cd27bc7199
+      template: 'Nokia 7x50 SR By Patrick'
+      name: 'Nokia 7x50 SR'
+      description: |
+        Template Desenvolvido Por Patrick Arêas (CGR - Leste) para monitoramento do Roteador Nokia 7x50 SR
+        
+        Data: 29/08/2023
+        Hora:09:48
+      groups:
+        -
+          name: Roteadores
+      items:
+        -
+          uuid: e6c19c7882384b5bb07290574cdbee69
+          name: 'Connected Clients'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.6527.3.1.2.2.3.46.1.16.1.1.1
+          key: connectedclients
+          history: 365d
+      discovery_rules:
+        -
+          uuid: 23f8743d4df040efa024be999fc492ed
+          name: 'Interface Statistics'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#SNMPVALUE},.1.3.6.1.2.1.31.1.1.1.1]'
+          key: IntStatistics
+          filter:
+            evaltype: OR
+            conditions:
+              -
+                macro: '{#SNMPVALUE}'
+                value: 1/1/c
+                formulaid: A
+              -
+                macro: '{#SNMPVALUE}'
+                value: 1/1/m
+                formulaid: B
+              -
+                macro: '{#SNMPVALUE}'
+                value: A/
+                formulaid: C
+              -
+                macro: '{#SNMPVALUE}'
+                value: pxc-
+                formulaid: D
+          item_prototypes:
+            -
+              uuid: 1856550a1df64a8fb60370f6e23c63d6
+              name: 'Interface {#SNMPVALUE} Admin Status'
+              type: SNMP_AGENT
+              snmp_oid: '1.3.6.1.2.1.2.2.1.7.{#SNMPINDEX}'
+              key: 'intAdminStts.[{#SNMPINDEX}]'
+              delay: 3m
+              history: 365d
+              trends: '0'
+              value_type: TEXT
+              preprocessing:
+                -
+                  type: STR_REPLACE
+                  parameters:
+                    - '1'
+                    - '1 (up)'
+                -
+                  type: STR_REPLACE
+                  parameters:
+                    - '2'
+                    - '2 (down)'
+            -
+              uuid: 27ee555ec79743ac898c68871e7a1479
+              name: 'Interface {#SNMPVALUE} Description'
+              type: SNMP_AGENT
+              snmp_oid: '1.3.6.1.2.1.31.1.1.1.18.{#SNMPINDEX}'
+              key: 'intDesc.[{#SNMPINDEX}]'
+              delay: 3m
+              history: 365d
+              trends: '0'
+              value_type: TEXT
+            -
+              uuid: 5c587a659e0b4c10b3c650020a561775
+              name: 'interface {#SNMPVALUE} Velocidade'
+              type: SNMP_AGENT
+              snmp_oid: '1.3.6.1.2.1.31.1.1.1.15.{#SNMPINDEX}'
+              key: 'interfaceHighSpeed.[{#SNMPINDEX}]'
+              delay: 10m
+              history: 365d
+              units: bps
+              preprocessing:
+                -
+                  type: MULTIPLIER
+                  parameters:
+                    - '1000000'
+            -
+              uuid: a273991382f547c1892755d65b0cea24
+              name: 'interface {#SNMPVALUE} Velocidade 85 %'
+              type: SNMP_AGENT
+              snmp_oid: '1.3.6.1.2.1.31.1.1.1.15.{#SNMPINDEX}'
+              key: 'interfaceHighSpeedpercent.[{#SNMPINDEX}]'
+              delay: 10m
+              history: 365d
+              units: bps
+              preprocessing:
+                -
+                  type: MULTIPLIER
+                  parameters:
+                    - '0.85'
+                -
+                  type: MULTIPLIER
+                  parameters:
+                    - '1000000'
+            -
+              uuid: 800761ee78224bd1b2c8fe9150b3ab45
+              name: 'interface {#SNMPVALUE} Download'
+              type: SNMP_AGENT
+              snmp_oid: '1.3.6.1.2.1.31.1.1.1.6.{#SNMPINDEX}'
+              key: 'interfaceIncomingTraffic.[{#SNMPINDEX}]'
+              delay: 3m
+              history: 365d
+              value_type: FLOAT
+              units: bps
+              preprocessing:
+                -
+                  type: CHANGE_PER_SECOND
+                  parameters:
+                    - ''
+            -
+              uuid: ade08c6296054daa83546497201eae0c
+              name: 'interface {#SNMPVALUE} Upload'
+              type: SNMP_AGENT
+              snmp_oid: '1.3.6.1.2.1.31.1.1.1.10.{#SNMPINDEX}'
+              key: 'interfaceOutgoingTraffic.[{#SNMPINDEX}]'
+              delay: 3m
+              history: 365d
+              value_type: FLOAT
+              units: bps
+              preprocessing:
+                -
+                  type: CHANGE_PER_SECOND
+                  parameters:
+                    - ''
+            -
+              uuid: 00daf8ba23f94d53b24835463e212d04
+              name: 'interface {#SNMPVALUE} Status'
+              type: SNMP_AGENT
+              snmp_oid: '1.3.6.1.2.1.2.2.1.8.{#SNMPINDEX}'
+              key: 'interfaceStts.[{#SNMPINDEX}]'
+              history: 365d
+              trends: '0'
+              value_type: TEXT
+              preprocessing:
+                -
+                  type: STR_REPLACE
+                  parameters:
+                    - '1'
+                    - '1 (up)'
+                -
+                  type: STR_REPLACE
+                  parameters:
+                    - '2'
+                    - '2 (down)'
+            -
+              uuid: 72aefaa839444308a9c2608dbd7cff9d
+              name: 'Interface {#SNMPVALUE} Incoming Discart'
+              type: SNMP_AGENT
+              snmp_oid: '1.3.6.1.2.1.2.2.1.13.{#SNMPINDEX}'
+              key: 'intIncomingDiscart.[{#SNMPINDEX}]'
+              delay: 3m
+              history: 365d
+              preprocessing:
+                -
+                  type: CHANGE_PER_SECOND
+                  parameters:
+                    - ''
+            -
+              uuid: b58429996d6d4f30ad380acf7479ec48
+              name: 'Interface {#SNMPVALUE} Outgoing Discart'
+              type: SNMP_AGENT
+              snmp_oid: '1.3.6.1.2.1.2.2.1.18.{#SNMPINDEX}'
+              key: 'intOutgoingDiscart.[{#SNMPINDEX}]'
+              delay: 3m
+              history: 365d
+              preprocessing:
+                -
+                  type: CHANGE_PER_SECOND
+                  parameters:
+                    - ''
